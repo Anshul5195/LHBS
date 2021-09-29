@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <legend>Lecture Hall Booking System</legend>
+    <div class="dropdown">
+      <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Lecture Halls
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+        <a class="dropdown-item" href="{{ url_for('lecture_hall', number=1) }}">Lecture Hall 1</a>
+        <a class="dropdown-item" href="{{ url_for('lecture_hall', number=2) }}">Lecture Hall 2</a>
+        <a class="dropdown-item" href="{{ url_for('lecture_hall', number=3) }}">Lecture Hall 3</a>
+        <a class="dropdown-item" href="{{ url_for('lecture_hall', number=4) }}">Lecture Hall 4</a>
+        <a class="dropdown-item" href="{{ url_for('lecture_hall', number=5) }}">Lecture Hall 5</a>
+        <a class="dropdown-item" href="{{ url_for('lecture_hall', number=6) }}">Lecture Hall 6</a>
+        <a class="dropdown-item" href="{{ url_for('lecture_hall', number=7) }}">Lecture Hall 7</a>
+        <a class="dropdown-item" href="{{ url_for('lecture_hall', number=8) }}">Lecture Hall 8</a>
+        <a class="dropdown-item" href="{{ url_for('lecture_hall', number=9) }}">Lecture Hall 9</a>
+        <a class="dropdown-item" href="{{ url_for('lecture_hall', number=10) }}">Lecture Hall 10</a>
+        <a class="dropdown-item" href="{{ url_for('lecture_hall', number=11) }}">Lecture Hall 11</a>
+        <a class="dropdown-item" href="{{ url_for('lecture_hall', number=12) }}">Lecture Hall 12</a>
+      </div>
+    </div>
+
+
+
+
+
+
+{% endblock content %}
