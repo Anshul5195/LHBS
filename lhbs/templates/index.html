@@ -1,0 +1,91 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h3 class="text-muted text-center mb-4 mt-4">Lecture Hall Booking System</h3>
+<form action="/book-slot" method="POST">
+    <div class="form-row" style="width:900px; margin:0 auto;">
+        <div class="form-group col-md-3">
+          <select class="form-control" name="booked-date" id="booked_date" onchange="changeDateFunc()"></select>
+        </div>
+        <div class="form-group col-md-3">
+          <select class="form-control" name="booked-lecture-hall" id="booked_lecture_hall" onchange="changeLectureHallFunc()">
+            <option disabled selected>Lecture Halls</option>
+          </select>
+        </div>
+        <div class="form-group col-md-3">
+          <select class="form-control" name="booked-time-slot" id="booked_time_slot" onchange="changeTimeSlotFunc()">
+            <option disabled selected>Time Slots</option>
+          </select>
+        </div>
+        <div class="form-group col-md-3">
+            <button class="btn btn-primary" type="submit" disabled id="book_slot">Book</button>
+        </div>
+    </div>
+</form>
+
+
+<script>
+
+    $.get('/dates', function(data) {
+        var options = '<option disabled selected>Dates</option>';
+        for (var i in data["dates"]) {
+            if (data["dates"][i][1]) {
+                options += `<option value="${data["dates"][i][0]}">${data["dates"][i][0]}</option>`
+            }
+            else {
+                options += `<option disabled>${data["dates"][i][0]}</option>`
+            }
+        }
+        document.getElementById("booked_date").innerHTML = options
+    });
+
+    function changeDateFunc() {
+        var selectDateBox = document.getElementById("booked_date");
+        var selectedDate = selectDateBox.options[selectDateBox.selectedIndex].value;
+        document.getElementById("booked_date").setAttribute("value", selectedDate);
+        $.get('/dates/' + selectedDate, function(data){
+            var options = '<option disabled selected>Lecture Halls</option>';
+            for (var i in data["lecture_halls"]) {
+                if (data["lecture_halls"][i][2]) {
+                    options += `<option value="${data["lecture_halls"][i][0]}">${data["lecture_halls"][i][1]}</option>`
+                }
+                else {
+                    options += `<option disabled>${data["lecture_halls"][i][1]}</option>`
+
+                }
+            }
+            document.getElementById("booked_lecture_hall").innerHTML = options
+        });
+    };
+
+    function changeLectureHallFunc() {
+        var selectLectureHallBox = document.getElementById("booked_lecture_hall");
+        var selectedLectureHall = selectLectureHallBox.options[selectLectureHallBox.selectedIndex].value;
+        var selectedDate = document.getElementById("booked_date").value;
+        document.getElementById("booked_lecture_hall").setAttribute("value", selectedLectureHall);
+        $.get('/dates/' + selectedDate + '/' + selectedLectureHall, function(data){
+            var options = '<option disabled selected>Time Slots</option>';
+            for (var i in data["time_slots"]) {
+                if (data["time_slots"][i][2]) {
+                    options += `<option value="${data["time_slots"][i][0]}">${data["time_slots"][i][1]}</option>`
+                }
+                else {
+                    options += `<option disabled>${data["time_slots"][i][1]}</option>`
+
+                }
+            }
+            document.getElementById("booked_time_slot").innerHTML = options
+        });
+    };
+
+
+    function changeTimeSlotFunc() {
+        var selectTimeSlotBox = document.getElementById("booked_time_slot");
+        var selectedTimeSlot = selectTimeSlotBox.options[selectTimeSlotBox.selectedIndex].value;
+        document.getElementById("booked_time_slot").setAttribute("value", selectedTimeSlot);
+        document.getElementById("book_slot").removeAttribute("disabled");
+    };
+
+
+</script>
+{% endblock content %}
