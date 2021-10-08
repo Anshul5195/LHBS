@@ -40,6 +40,8 @@
     });
 
     function changeDateFunc() {
+        document.getElementById("booked_time_slot").innerHTML = '<option disabled selected>Time Slots</option>';
+        document.getElementById("book_slot").setAttribute("disabled", true);
         var selectDateBox = document.getElementById("booked_date");
         var selectedDate = selectDateBox.options[selectDateBox.selectedIndex].value;
         document.getElementById("booked_date").setAttribute("value", selectedDate);
@@ -54,11 +56,12 @@
 
                 }
             }
-            document.getElementById("booked_lecture_hall").innerHTML = options
+            document.getElementById("booked_lecture_hall").innerHTML = options;
         });
     };
 
     function changeLectureHallFunc() {
+        document.getElementById("book_slot").setAttribute("disabled", true);
         var selectLectureHallBox = document.getElementById("booked_lecture_hall");
         var selectedLectureHall = selectLectureHallBox.options[selectLectureHallBox.selectedIndex].value;
         var selectedDate = document.getElementById("booked_date").value;
@@ -74,7 +77,7 @@
 
                 }
             }
-            document.getElementById("booked_time_slot").innerHTML = options
+            document.getElementById("booked_time_slot").innerHTML = options;
         });
     };
 
