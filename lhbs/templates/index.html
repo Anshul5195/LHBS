@@ -1,94 +1,52 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<h3 class="text-muted text-center mb-4 mt-4">Lecture Hall Booking System</h3>
+
 <form action="/book-slot" method="POST">
-    <div class="form-row" style="width:900px; margin:0 auto;">
-        <div class="form-group col-md-3">
-          <select class="form-control" name="booked-date" id="booked_date" onchange="changeDateFunc()"></select>
+
+    <div class="form-row justify-content-center" style="width:800px; margin:0 auto;">
+        <h3 class="text-muted text-center mb-4 mt-4">Lecture Hall Booking System</h3>
+    </div>
+
+    <div class="form-row justify-content-center mb-2" style="width:800px; margin:0 auto;">
+        <div class="form-group col-md-4">
+          <select class="form-control" name="date" id="bookedDate" onchange="changeDateFunc()"></select>
         </div>
-        <div class="form-group col-md-3">
-          <select class="form-control" name="booked-lecture-hall" id="booked_lecture_hall" onchange="changeLectureHallFunc()">
+        <div class="form-group col-md-4">
+          <select class="form-control" name="lectureHall" id="bookedLectureHall" onchange="changeLectureHallFunc()">
             <option disabled selected>Lecture Halls</option>
           </select>
         </div>
-        <div class="form-group col-md-3">
-          <select class="form-control" name="booked-time-slot" id="booked_time_slot" onchange="changeTimeSlotFunc()">
+        <div class="form-group col-md-4">
+          <select class="form-control" name="TimeSlot" id="bookedTimeSlot" onchange="changeTimeSlotFunc()">
             <option disabled selected>Time Slots</option>
           </select>
         </div>
-        <div class="form-group col-md-3">
-            <button class="btn btn-primary" type="submit" disabled id="book_slot">Book</button>
-        </div>
     </div>
+
+    <div class="form-row mb-4" style="width:800px; margin:0 auto;">
+        <label for="startTime">Start Time</label>
+        <input type="range" class="form-control-range" step="5" id="startTime" disabled
+               oninput=changeStartTimeInputFunc()>
+        <br />
+        <span id="startTimeValue"></span>
+        <input type="hidden" name="startTimeValue" id="startTimeOutputValue">
+    </div>
+
+    <div class="form-row mb-4" style="width:800px; margin:0 auto;">
+        <label for="endTime">End Time</label>
+        <input type="range" class="form-control-range" step="5" id="endTime" disabled
+               oninput=changeEndTimeInputFunc()>
+        <br />
+        <span id="endTimeValue"></span>
+        <input type="hidden" name="endTimeValue" id="endTimeOutputValue">
+    </div>
+
+    <div class="form-row justify-content-center" style="width:800px; margin:0 auto;">
+        <button class="btn btn-primary btn-lg" type="submit" disabled id="bookSlot">Book</button>
+    </div>
+
 </form>
 
-
-<script>
-
-    $.get('/dates', function(data) {
-        var options = '<option disabled selected>Dates</option>';
-        for (var i in data["dates"]) {
-            if (data["dates"][i][1]) {
-                options += `<option value="${data["dates"][i][0]}">${data["dates"][i][0]}</option>`
-            }
-            else {
-                options += `<option disabled>${data["dates"][i][0]}</option>`
-            }
-        }
-        document.getElementById("booked_date").innerHTML = options
-    });
-
-    function changeDateFunc() {
-        document.getElementById("booked_time_slot").innerHTML = '<option disabled selected>Time Slots</option>';
-        document.getElementById("book_slot").setAttribute("disabled", true);
-        var selectDateBox = document.getElementById("booked_date");
-        var selectedDate = selectDateBox.options[selectDateBox.selectedIndex].value;
-        document.getElementById("booked_date").setAttribute("value", selectedDate);
-        $.get('/dates/' + selectedDate, function(data){
-            var options = '<option disabled selected>Lecture Halls</option>';
-            for (var i in data["lecture_halls"]) {
-                if (data["lecture_halls"][i][2]) {
-                    options += `<option value="${data["lecture_halls"][i][0]}">${data["lecture_halls"][i][1]}</option>`
-                }
-                else {
-                    options += `<option disabled>${data["lecture_halls"][i][1]}</option>`
-
-                }
-            }
-            document.getElementById("booked_lecture_hall").innerHTML = options;
-        });
-    };
-
-    function changeLectureHallFunc() {
-        document.getElementById("book_slot").setAttribute("disabled", true);
-        var selectLectureHallBox = document.getElementById("booked_lecture_hall");
-        var selectedLectureHall = selectLectureHallBox.options[selectLectureHallBox.selectedIndex].value;
-        var selectedDate = document.getElementById("booked_date").value;
-        document.getElementById("booked_lecture_hall").setAttribute("value", selectedLectureHall);
-        $.get('/dates/' + selectedDate + '/' + selectedLectureHall, function(data){
-            var options = '<option disabled selected>Time Slots</option>';
-            for (var i in data["time_slots"]) {
-                if (data["time_slots"][i][2]) {
-                    options += `<option value="${data["time_slots"][i][0]}">${data["time_slots"][i][1]}</option>`
-                }
-                else {
-                    options += `<option disabled>${data["time_slots"][i][1]}</option>`
-
-                }
-            }
-            document.getElementById("booked_time_slot").innerHTML = options;
-        });
-    };
-
-
-    function changeTimeSlotFunc() {
-        var selectTimeSlotBox = document.getElementById("booked_time_slot");
-        var selectedTimeSlot = selectTimeSlotBox.options[selectTimeSlotBox.selectedIndex].value;
-        document.getElementById("booked_time_slot").setAttribute("value", selectedTimeSlot);
-        document.getElementById("book_slot").removeAttribute("disabled");
-    };
-
-
-</script>
+<script src="../static/main.js"></script>
 {% endblock content %}

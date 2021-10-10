@@ -3,9 +3,10 @@ from lhbs import db
 
 class LHBS(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    booked_date = db.Column(db.String(32))
-    booked_lecture_hall = db.Column(db.Integer)
-    booked_time_slot = db.Column(db.Integer)
+    date = db.Column(db.Date)
+    lecture_hall = db.Column(db.Integer)
+    start_time = db.Column(db.Time)
+    end_time = db.Column(db.Time)
 
     def __repr__(self):
-        return f"({self.id}, '{self.booked_date}', {self.booked_lecture_hall}, {self.booked_time_slot})"
+        return f"({self.id}, '{self.date}', {self.lecture_hall}, '{self.start_time}', '{self.end_time}')"
