@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<form action="/book-slot" method="POST">
+<form action="{{ url_for('api.book_time_slot_api') }}" method="POST">
 
     <div class="form-row justify-content-center" style="width:800px; margin:0 auto;">
         <h3 class="text-muted text-center mb-4 mt-4">Lecture Hall Booking System</h3>
@@ -42,11 +42,16 @@
         <input type="hidden" name="endTimeValue" id="endTimeOutputValue">
     </div>
 
+    <div class="form-row mb-4" style="width:800px; margin:0 auto;">
+        <label for="purpose">Purpose</label>
+        <textarea name="purpose" class="form-control" id="purpose" rows="3"></textarea>
+    </div>
+
     <div class="form-row justify-content-center" style="width:800px; margin:0 auto;">
         <button class="btn btn-primary btn-lg" type="submit" disabled id="bookSlot">Book</button>
     </div>
 
 </form>
 
-<script src="../static/main.js"></script>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
 {% endblock content %}

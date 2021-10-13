@@ -1,5 +1,6 @@
-from flask import Blueprint, jsonify, request, redirect
-from lhbs.models import LHBS
+from flask import Blueprint, jsonify, request, redirect, flash, url_for
+from flask_login import login_required, current_user
+from lhbs.models import Booking
 from lhbs import db
 import datetime
 
@@ -24,7 +25,7 @@ def show_dates_api():
     
     dates = []
     for check_date in all_dates:
-        check_date_data = LHBS.query.filter_by(date=check_date).all()
+        check_date_data = Booking.query.filter_by(date=check_date).all()
         check_date_total_time = 0
         for check_date_time_data in check_date_data:
             check_date_start_time = check_date_time_data.start_time
@@ -47,7 +48,7 @@ def show_lecture_halls_api(specific_date):
     specific_date_date_obj = datetime.datetime.strptime(specific_date, "%Y-%m-%d").date()
     lecture_halls = []
     for lecture_hall_key, lecture_hall_value in all_lecture_halls.items():
-        lecture_hall_data = LHBS.query.filter_by(date=specific_date_date_obj,
+        lecture_hall_data = Booking.query.filter_by(date=specific_date_date_obj,
                                                  lecture_hall=lecture_hall_key).all()
         lecture_hall_total_time = 0
         for lecture_hall_time_data in lecture_hall_data:
@@ -70,7 +71,7 @@ def show_lecture_halls_api(specific_date):
 def show_time_slot_api(specific_date, lecture_hall):
     booked_time_slots = []
     specific_date_date_obj = datetime.datetime.strptime(specific_date, "%Y-%m-%d").date()
-    time_slot_data = LHBS.query.filter_by(date=specific_date_date_obj, lecture_hall=lecture_hall).all()
+    time_slot_data = Booking.query.filter_by(date=specific_date_date_obj, lecture_hall=lecture_hall).all()
     for check_time_slot_data in time_slot_data:
         time_slot_start_time = check_time_slot_data.start_time
         time_slot_end_time = check_time_slot_data.end_time
@@ -104,6 +105,7 @@ def show_time_slot_api(specific_date, lecture_hall):
 
 
 @api.route("/book-slot", methods=["GET", "POST"])
+@login_required
 def book_time_slot_api():
     booked_date = request.form.get("date")
     booked_date_date_obj = datetime.datetime.strptime(booked_date, "%Y-%m-%d").date()
@@ -113,21 +115,25 @@ def book_time_slot_api():
     booked_start_time_time_obj = datetime.datetime.strptime(booked_start_time, "%H:%M:%S").time()
     booked_end_time = request.form.get("endTimeValue")
     booked_end_time_time_obj = datetime.datetime.strptime(booked_end_time, "%H:%M:%S").time()
+    purpose = request.form.get("purpose")
     if booked_end_time_time_obj > booked_start_time_time_obj:
-        check_data = LHBS.query.filter(LHBS.date == booked_date_date_obj,
-                                       LHBS.lecture_hall == booked_lecture_hall_int_obj,
-                                       LHBS.start_time <= booked_start_time_time_obj,
-                                       LHBS.end_time >= booked_end_time_time_obj).count()
+        check_data = Booking.query.filter(Booking.date == booked_date_date_obj,
+                                          Booking.lecture_hall == booked_lecture_hall_int_obj,
+                                          Booking.start_time <= booked_start_time_time_obj,
+                                          Booking.end_time >= booked_end_time_time_obj).count()
         if check_data:
-            return redirect("/")
-        add_data_row = LHBS(date=booked_date_date_obj,
-                            lecture_hall=booked_lecture_hall_int_obj,
-                            start_time=booked_start_time_time_obj, end_time=booked_end_time_time_obj)
+            flash("Somebody already booked between these time slots", "danger")
+            return redirect(url_for("view.home_page"))
+        add_data_row = Booking(date=booked_date_date_obj,
+                               lecture_hall=booked_lecture_hall_int_obj,
+                               start_time=booked_start_time_time_obj, end_time=booked_end_time_time_obj,
+                               customer=current_user, purpose=purpose)
         db.session.add(add_data_row)
         db.session.commit()
-        return redirect('/')
+        flash("Time slot has been booked", "success")
     else:
-        return redirect("/")
+        flash("Start time must be greater than end time", "danger")
+    return redirect(url_for("view.home_page"))
 
 
 # @api.route("/justToCheck")
@@ -141,9 +147,9 @@ def book_time_slot_api():
 #     booked_end_time = "18:00:00.000000"
 #     booked_end_time_time_obj = datetime.datetime.strptime(booked_end_time, "%H:%M:%S.%f").time()
 #     print(booked_end_time_time_obj)
-#     check_data = LHBS.query.filter(LHBS.date == booked_date_date_obj,
-#                                    LHBS.lecture_hall == booked_lecture_hall_int_obj,
-#                                    LHBS.start_time <= booked_start_time_time_obj,
-#                                    LHBS.end_time >= booked_end_time_time_obj).count()
+#     check_data = Booking.query.filter(Booking.date == booked_date_date_obj,
+#                                    Booking.lecture_hall == booked_lecture_hall_int_obj,
+#                                    Booking.start_time <= booked_start_time_time_obj,
+#                                    Booking.end_time >= booked_end_time_time_obj).count()
 #     check_data_date = check_data.date
 #     return jsonify(check_data_date)

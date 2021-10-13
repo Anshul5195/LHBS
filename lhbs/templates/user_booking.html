@@ -1,0 +1,50 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div style="width:800px; margin:0 auto;">
+    <label for="futureBookings">{{ current_user.username }}'s Upcoming Bookings</label>
+    <table class="table" id="futureBookings">
+      <thead>
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">Lecture Hall</th>
+          <th scope="col">Start Time</th>
+          <th scope="col">End Time</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for future_booking in future_bookings %}
+      <tr>
+          <th scope="row">{{ future_booking.date }}</th>
+          <td>{{ future_booking.lecture_hall }}</td>
+          <td>{{ future_booking.start_time }}</td>
+          <td>{{ future_booking.end_time }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>
+<div style="width:800px; margin:0 auto;">
+    <label for="pastBookings">{{ current_user.username }}'s Past Bookings</label>
+    <table class="table" id="pastBookings">
+      <thead>
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">Lecture Hall</th>
+          <th scope="col">Start Time</th>
+          <th scope="col">End Time</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for past_booking in past_bookings %}
+      <tr>
+          <th scope="row">{{ past_booking.date }}</th>
+          <td>{{ past_booking.lecture_hall }}</td>
+          <td>{{ past_booking.start_time }}</td>
+          <td>{{ past_booking.end_time }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>
+{% endblock content %}
